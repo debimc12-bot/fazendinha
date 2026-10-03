@@ -1,7 +1,7 @@
 import pygame
 
-from configuracao.configuracao import (LARGURA_TELA, ALTURA_TELA)
-
+from configuracao.configuracao import Configuracao
+config = Configuracao()
 TAMANHO_CORVO = 30
 VELOCIDADE_CORVO = 2
 COR_CORVO = (25, 25, 25)
@@ -9,9 +9,9 @@ TEMPO_COMENDO = 1000
 
 def criar_corvo():
     return {
-        "x": LARGURA_TELA - 80,
+        "x": config.largura_tela - 80,
         "y": 80,
-        "alvo_x": LARGURA_TELA - 80,
+        "alvo_x": config.largura_tela - 80,
         "alvo_y": 80,
         "estado": "vigiando",
         "tempo_comecou_comer": 0
@@ -63,12 +63,12 @@ def mover_corvo(corvo, terrenos, mala):
         corvo["estado"] = "vigiando"
 
         
-        if (corvo["alvo_x"] == LARGURA_TELA - 80 and corvo["alvo_y"] == 80):
-            corvo["alvo_x"] = LARGURA_TELA - 250
+        if (corvo["alvo_x"] == config.largura_tela - 80 and corvo["alvo_y"] == 80):
+            corvo["alvo_x"] = config.largura_tela - 250
             corvo["alvo_y"] = 80
 
-        elif (corvo["alvo_x"] == LARGURA_TELA - 250 and corvo["alvo_y"] == 80):
-            corvo["alvo_x"] = LARGURA_TELA - 80
+        elif (corvo["alvo_x"] == config.largura_tela - 250 and corvo["alvo_y"] == 80):
+            corvo["alvo_x"] = config.largura_tela - 80
             corvo["alvo_y"] = 80
     
     diferenca_x = corvo["alvo_x"] - corvo["x"]

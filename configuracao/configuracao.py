@@ -1,54 +1,54 @@
-LARGURA_TELA = 800
-ALTURA_TELA = 600
+from dataclasses import dataclass
 
-FPS = 60
-TITULO_JOGO = "Minha Fazenda"
+@dataclass
+class Configuracao:
+    largura_tela: int = 800
+    altura_tela: int = 600
+    fps: int = 60
+    titulo_jogo: str = "Minha Fazenda"
+
+    verde_grama: tuple = (90, 180, 80)
+    marrom_terra: tuple = (150, 100, 50)
+    branco: tuple = (255, 255, 255)
+    preto: tuple = (0, 0, 0)
+
+    verde_semente: tuple = (80, 150, 80)
+    verde_planta: tuple = (30, 140, 30)
+    verde_pronta: tuple = (20, 100, 20)
+
+    cor_energia: tuple = (255, 220, 40)
+    cor_fundo_energia: tuple = (70, 70, 70)
+
+    tamanho_jogador: int = 30
+    velocidade_jogador: int = 4
+
+    tamanho_terreno: int = 50
+    terreno_x: int = 100
+    terreno_y: int = 100
+
+    quantidade_colunas: int = 6
+    quantidade_linhas: int = 4
+
+    distancia_interacao: int = 40
+
+    energia_maxima: int = 1000
+    energia_inicial: int = 1000
+
+    tempo_recuperacao_segundos: int = 3 * 60 * 60
+
+    custo_preparar_terra: int = 10
+    custo_plantar_semente: int = 5
+    custo_regar_planta: int = 2
+    custo_colher_planta: int = 5
+
+    moedas_iniciais: int = 0
+    diamantes_iniciais: int = 0
+
+    MENU = "menu"
+    JOGANDO = "jogando"
+    PAUSADO = "pausado"
+    FIM_DE_JOGO = "fim_de_jogo"
 
 
-VERDE_GRAMA = (90, 180, 80)
-MARROM_TERRA = (150, 100, 50)
-BRANCO = (255, 255, 255)
-PRETO = (0, 0, 0)
 
-VERDE_SEMENTE = (80, 150, 80)
-VERDE_PLANTA = (30, 140, 30)
-VERDE_PRONTA = (20, 100, 20)
 
-# Barra de energia
-COR_ENERGIA = (255, 220, 40)
-COR_FUNDO_ENERGIA = (70, 70, 70)
-
-# CONFIGURAÇÕES DO JOGADOR
-
-TAMANHO_JOGADOR = 30
-VELOCIDADE_JOGADOR = 4
-
-# CONFIGURAÇÕES DO TERRENO
-
-TAMANHO_TERRENO = 50
-
-TERRENO_X = 250
-TERRENO_Y = 150
-
-QUANTIDADE_COLUNAS = 6
-QUANTIDADE_LINHAS = 4
-
-DISTANCIA_INTERACAO = 40
-# CONFIGURAÇÕES DE ENERGIA
-
-ENERGIA_MAXIMA = 1000
-ENERGIA_INICIAL = 1000
-
-# Tempo para recuperar a barra completa:
-TEMPO_RECUPERACAO_SEGUNDOS = 3 * 60 * 60
-
-# Custos provisórios das ações:
-CUSTO_PREPARAR_TERRA = 10
-CUSTO_PLANTAR = 5
-CUSTO_REGAR = 8
-CUSTO_COLHER = 5
-
-# CONFIGURAÇÕES DA ECONOMIA
-
-MOEDAS_INICIAIS = 0
-DIAMANTES_INICIAIS = 0

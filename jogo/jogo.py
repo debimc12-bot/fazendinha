@@ -1,6 +1,6 @@
 import pygame
 
-from configuracao.configuracao import (LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, VERDE_GRAMA, DISTANCIA_INTERACAO)
+from configuracao.configuracao import Configuracao
 from jogo.jogador import (criar_jogador, mover_jogador, desenhar_jogador)
 from jogo.terreno import (criar_terrenos, desenhar_terrenos)
 from jogo.plantas import (plantar, colher, atualizar_planta, desenhar_planta)
@@ -10,8 +10,12 @@ from jogo.mala import (criar_mala, pegar_isca, desenhar_mala, jogar_isca, desenh
 def iniciar_jogo():
     pygame.init()
 
-    tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
-    pygame.display.set_caption(TITULO_JOGO)
+    config = Configuracao()
+
+    estado = Configuracao.MENU
+    
+    tela = pygame.display.set_mode((config.largura_tela, config.altura_tela))
+    pygame.display.set_caption(config.titulo_jogo)
 
     relogio = pygame.time.Clock()
 
@@ -27,6 +31,16 @@ def iniciar_jogo():
     rodando = True
 
     while rodando:
+        if estado == Configuracao.MENU:
+            print("Abrindo Menu")
+            estado = Configuracao.JOGANDO
+        
+        elif estado == Configuracao.JOGANDO:
+            print("Jogando")
+
+        elif estado == Configuracao.PAUSADO:
+            print("Jogo Pausado")
+            
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 rodando = False
@@ -57,7 +71,7 @@ def iniciar_jogo():
         mover_jogador(jogador, teclas)
         mover_corvo(corvo, terrenos, mala)
 
-        tela.fill(VERDE_GRAMA)
+        tela.fill(config.verde_grama)
 
         texto_colheita = fonte.render(f"Plantas colhidas: {plantas_colhidas}", True, (255, 255, 255))
         tela.blit(texto_colheita, (20, 20))
@@ -75,6 +89,6 @@ def iniciar_jogo():
         desenhar_isca(tela, mala)
 
         pygame.display.flip()
-        relogio.tick(FPS)
+        relogio.tick(config.fps)
 
     pygame.quit()

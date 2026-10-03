@@ -1,6 +1,7 @@
 import pygame
 
-from configuracao.configuracao import (VERDE_SEMENTE, VERDE_PLANTA, VERDE_PRONTA)
+from configuracao.configuracao import Configuracao
+config = Configuracao()
 
 TEMPO_CRESCIMENTO = 10  
 
@@ -35,6 +36,7 @@ def atualizar_planta(planta):
 
     if tempo_passado >= TEMPO_CRESCIMENTO:
         planta["estado"] = "pronta"
+    
     elif tempo_passado >= TEMPO_CRESCIMENTO / 2:
         planta["estado"] = "crescendo"
 
@@ -44,13 +46,13 @@ def desenhar_planta(tela, planta, terreno):
         return
 
     if planta["estado"] == "semente":
-        cor = VERDE_SEMENTE
+        cor = config.verde_semente
         tamanho = 12
     elif planta["estado"] == "crescendo":
-        cor = VERDE_PLANTA
+        cor = config.verde_planta
         tamanho = 20
     elif planta["estado"] == "pronta":
-        cor = VERDE_PRONTA
+        cor = config.verde_pronta
         tamanho = 30
     else:
         return
