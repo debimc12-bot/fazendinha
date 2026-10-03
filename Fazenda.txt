@@ -1,0 +1,1492 @@
+A ideia é que a Parte 2 seja a Parte 1 + o terreno, e a Parte 3 seja a Parte 2 + o sistema de plantar.
+Parte 1 — Janela + jogador + movimento
+import pygame
+
+# ===================
+# Configurações
+# ===================
+
+LARGURA_TELA = 800
+ALTURA_TELA = 600
+
+FPS = 60
+
+# CORES
+
+VERDE_GRAMA = (90, 180, 80)
+MARROM_TERRA = (150, 100, 50)
+AZUL_CEU = (100, 180, 240)
+BRANCO = (255, 255, 255)
+
+
+# ============================
+# JOGADOR
+# ============================
+
+TAMANHO_JOGADOR = 30
+VELOCIDADE = 4
+
+
+def criar_jogador():
+
+    return {
+        "x": 400,
+        "y": 300
+    }
+
+
+def mover_jogador(jogador, teclas):
+
+    # Esquerda
+    if teclas[pygame.K_LEFT]:
+        jogador["x"] -= VELOCIDADE
+
+    # Direita
+    if teclas[pygame.K_RIGHT]:
+        jogador["x"] += VELOCIDADE
+
+    # Cima
+    if teclas[pygame.K_UP]:
+        jogador["y"] -= VELOCIDADE
+
+    # Baixo
+    if teclas[pygame.K_DOWN]:
+        jogador["y"] += VELOCIDADE
+
+
+# ======================================
+# DESENHAR JOGADOR
+# ======================================
+
+def desenhar_jogador(tela, jogador):
+
+    jogador_rect = pygame.Rect(
+        jogador["x"],
+        jogador["y"],
+        TAMANHO_JOGADOR,
+        TAMANHO_JOGADOR
+    )
+
+    pygame.draw.rect(
+        tela,
+        BRANCO,
+        jogador_rect
+    )
+
+
+# ======================================
+# DESENHAR FAZENDA
+# ======================================
+
+def desenhar_fazenda(tela):
+
+    # Fundo da fazenda
+
+    tela.fill(VERDE_GRAMA)
+
+
+# ======================================
+# PROGRAMA PRINCIPAL
+# ======================================
+
+def main():
+
+    pygame.init()
+
+    # Criar a janela
+
+    tela = pygame.display.set_mode(
+        (LARGURA_TELA, ALTURA_TELA)
+    )
+
+    pygame.display.set_caption(
+        "Minha Fazenda"
+    )
+
+    relogio = pygame.time.Clock()
+
+    jogador = criar_jogador()
+
+    rodando = True
+
+    while rodando:
+
+        # -----------------------
+        # EVENTOS
+        # -----------------------
+
+        for evento in pygame.event.get():
+
+            if evento.type == pygame.QUIT:
+
+                rodando = False
+
+
+        # -----------------------
+        # TECLAS
+        # -----------------------
+
+        teclas = pygame.key.get_pressed()
+
+
+        # -----------------------
+        # MOVIMENTO
+        # -----------------------
+
+        mover_jogador(
+            jogador,
+            teclas
+        )
+
+
+        # -----------------------
+        # DESENHAR
+        # -----------------------
+
+        desenhar_fazenda(
+            tela
+        )
+
+        desenhar_jogador(
+            tela,
+            jogador
+        )
+
+        pygame.display.flip()
+
+
+        # -----------------------
+        # FPS
+        # -----------------------
+
+        relogio.tick(FPS)
+
+
+    pygame.quit()
+
+
+# ======================================
+# INICIAR JOGO
+# ======================================
+
+if __name__ == "__main__":
+
+    main()
+
+Parte 2 — Adicionando o terreno dividido em quadrados
+
+Agora pegamos a Parte 1 e acrescentamos o sistema de terreno.
+
+A diferença principal é que agora temos:
+
+TAMANHO_TERRENO = 50
+TERRENO_X = 250
+TERRENO_Y = 150
+
+QUANTIDADE_COLUNAS = 6
+QUANTIDADE_LINHAS = 4
+
+E criamos os quadrados.
+
+Código completo:
+import pygame
+
+# ===================
+# Configurações
+# ===================
+
+LARGURA_TELA = 800
+ALTURA_TELA = 600
+
+FPS = 60
+
+# CORES
+
+VERDE_GRAMA = (90, 180, 80)
+MARROM_TERRA = (150, 100, 50)
+AZUL_CEU = (100, 180, 240)
+BRANCO = (255, 255, 255)
+
+
+# ============================
+# JOGADOR
+# ============================
+
+TAMANHO_JOGADOR = 30
+VELOCIDADE = 4
+
+
+# ============================
+# TERRENO DE PLANTAÇÃO
+# ============================
+
+TAMANHO_TERRENO = 50
+
+TERRENO_X = 250
+TERRENO_Y = 150
+
+QUANTIDADE_COLUNAS = 6
+QUANTIDADE_LINHAS = 4
+
+
+def criar_jogador():
+
+    return {
+        "x": 400,
+        "y": 300
+    }
+
+
+def mover_jogador(jogador, teclas):
+
+    # Esquerda
+    if teclas[pygame.K_LEFT]:
+        jogador["x"] -= VELOCIDADE
+
+    # Direita
+    if teclas[pygame.K_RIGHT]:
+        jogador["x"] += VELOCIDADE
+
+    # Cima
+    if teclas[pygame.K_UP]:
+        jogador["y"] -= VELOCIDADE
+
+    # Baixo
+    if teclas[pygame.K_DOWN]:
+        jogador["y"] += VELOCIDADE
+
+
+# ======================================
+# CRIAR TERRENO
+# ======================================
+
+def criar_terreno():
+
+    terreno = []
+
+    for linha in range(QUANTIDADE_LINHAS):
+
+        for coluna in range(QUANTIDADE_COLUNAS):
+
+            quadrado = {
+                "linha": linha,
+                "coluna": coluna,
+                "plantado": False
+            }
+
+            terreno.append(quadrado)
+
+    return terreno
+
+
+# ======================================
+# DESENHAR JOGADOR
+# ======================================
+
+def desenhar_jogador(tela, jogador):
+
+    jogador_rect = pygame.Rect(
+        jogador["x"],
+        jogador["y"],
+        TAMANHO_JOGADOR,
+        TAMANHO_JOGADOR
+    )
+
+    pygame.draw.rect(
+        tela,
+        BRANCO,
+        jogador_rect
+    )
+
+
+# ======================================
+# DESENHAR FAZENDA
+# ======================================
+
+def desenhar_fazenda(tela):
+
+    # Fundo da fazenda
+
+    tela.fill(VERDE_GRAMA)
+
+
+# ======================================
+# DESENHAR TERRENO
+# ======================================
+
+def desenhar_terreno(tela, terreno):
+
+    for quadrado in terreno:
+
+        x = TERRENO_X + (
+            quadrado["coluna"] * TAMANHO_TERRENO
+        )
+
+        y = TERRENO_Y + (
+            quadrado["linha"] * TAMANHO_TERRENO
+        )
+
+        rect = pygame.Rect(
+            x,
+            y,
+            TAMANHO_TERRENO,
+            TAMANHO_TERRENO
+        )
+
+        # Terra
+
+        pygame.draw.rect(
+            tela,
+            MARROM_TERRA,
+            rect
+        )
+
+        # Linha do quadrado
+
+        pygame.draw.rect(
+            tela,
+            (100, 70, 40),
+            rect,
+            2
+        )
+
+
+# ======================================
+# PROGRAMA PRINCIPAL
+# ======================================
+
+def main():
+
+    pygame.init()
+
+    tela = pygame.display.set_mode(
+        (LARGURA_TELA, ALTURA_TELA)
+    )
+
+    pygame.display.set_caption(
+        "Minha Fazenda"
+    )
+
+    relogio = pygame.time.Clock()
+
+    jogador = criar_jogador()
+
+    # Criar terreno
+
+    terreno = criar_terreno()
+
+    rodando = True
+
+    while rodando:
+
+        # -----------------------
+        # EVENTOS
+        # -----------------------
+
+        for evento in pygame.event.get():
+
+            if evento.type == pygame.QUIT:
+
+                rodando = False
+
+
+        # -----------------------
+        # TECLAS
+        # -----------------------
+
+        teclas = pygame.key.get_pressed()
+
+
+        # -----------------------
+        # MOVIMENTO
+        # -----------------------
+
+        mover_jogador(
+            jogador,
+            teclas
+        )
+
+
+        # -----------------------
+        # DESENHAR
+        # -----------------------
+
+        desenhar_fazenda(
+            tela
+        )
+
+        desenhar_terreno(
+            tela,
+            terreno
+        )
+
+        desenhar_jogador(
+            tela,
+            jogador
+        )
+
+        pygame.display.flip()
+
+
+        # -----------------------
+        # FPS
+        # -----------------------
+
+        relogio.tick(FPS)
+
+
+    pygame.quit()
+
+
+# ======================================
+# INICIAR JOGO
+# ======================================
+
+if __name__ == "__main__":
+
+    main()
+
+Agora temos:
+🌱 Fazenda
+   │
+   ├── 🧑 Jogador
+   │
+   └── 🟫 🟫 🟫 🟫 🟫 🟫
+       🟫 🟫 🟫 🟫 🟫 🟫
+       🟫 🟫 🟫 🟫 🟫 🟫
+       🟫 🟫 🟫 🟫 🟫 🟫
+       São:6 colunas × 4 linhas = 24 quadrados
+
+Parte 3 — Adicionando o plantio
+
+Agora pegamos a Parte 2 e acrescentamos:
+DISTANCIA_INTERACAO = 40
+Também criamos:
+
+plantar_semente()
+E fazemos o quadrado mudar de:
+
+"plantado": False
+
+para:
+
+"plantado": True
+
+Código completo:
+
+import pygame
+
+# ===================
+# Configurações
+# ===================
+
+LARGURA_TELA = 800
+ALTURA_TELA = 600
+
+FPS = 60
+
+# CORES
+
+VERDE_GRAMA = (90, 180, 80)
+MARROM_TERRA = (150, 100, 50)
+AZUL_CEU = (100, 180, 240)
+BRANCO = (255, 255, 255)
+
+
+# ============================
+# JOGADOR
+# ============================
+
+TAMANHO_JOGADOR = 30
+VELOCIDADE = 4
+
+
+# ============================
+# TERRENO DE PLANTAÇÃO
+# ============================
+
+TAMANHO_TERRENO = 50
+
+TERRENO_X = 250
+TERRENO_Y = 150
+
+QUANTIDADE_COLUNAS = 6
+QUANTIDADE_LINHAS = 4
+
+DISTANCIA_INTERACAO = 40
+
+
+# ============================
+# CRIAR JOGADOR
+# ============================
+
+def criar_jogador():
+
+    return {
+        "x": 400,
+        "y": 300
+    }
+
+
+# ============================
+# MOVER JOGADOR
+# ============================
+
+def mover_jogador(jogador, teclas):
+
+    # Esquerda
+
+    if teclas[pygame.K_LEFT]:
+
+        jogador["x"] -= VELOCIDADE
+
+
+    # Direita
+
+    if teclas[pygame.K_RIGHT]:
+
+        jogador["x"] += VELOCIDADE
+
+
+    # Cima
+
+    if teclas[pygame.K_UP]:
+
+        jogador["y"] -= VELOCIDADE
+
+
+    # Baixo
+
+    if teclas[pygame.K_DOWN]:
+
+        jogador["y"] += VELOCIDADE
+
+
+# ======================================
+# CRIAR TERRENO
+# ======================================
+
+def criar_terreno():
+
+    terreno = []
+
+    for linha in range(QUANTIDADE_LINHAS):
+
+        for coluna in range(QUANTIDADE_COLUNAS):
+
+            quadrado = {
+                "linha": linha,
+                "coluna": coluna,
+                "plantado": False
+            }
+
+            terreno.append(quadrado)
+
+    return terreno
+
+
+# ======================================
+# DESENHAR JOGADOR
+# ======================================
+
+def desenhar_jogador(tela, jogador):
+
+    jogador_rect = pygame.Rect(
+        jogador["x"],
+        jogador["y"],
+        TAMANHO_JOGADOR,
+        TAMANHO_JOGADOR
+    )
+
+    pygame.draw.rect(
+        tela,
+        BRANCO,
+        jogador_rect
+    )
+
+
+# ======================================
+# DESENHAR FAZENDA
+# ======================================
+
+def desenhar_fazenda(tela):
+
+    tela.fill(VERDE_GRAMA)
+
+
+# ======================================
+# DESENHAR TERRENO
+# ======================================
+
+def desenhar_terreno(tela, terreno):
+
+    for quadrado in terreno:
+
+        x = TERRENO_X + (
+            quadrado["coluna"] * TAMANHO_TERRENO
+        )
+
+        y = TERRENO_Y + (
+            quadrado["linha"] * TAMANHO_TERRENO
+        )
+
+        rect = pygame.Rect(
+            x,
+            y,
+            TAMANHO_TERRENO,
+            TAMANHO_TERRENO
+        )
+
+        # Terra
+
+        pygame.draw.rect(
+            tela,
+            MARROM_TERRA,
+            rect
+        )
+
+        # Linha do quadrado
+
+        pygame.draw.rect(
+            tela,
+            (100, 70, 40),
+            rect,
+            2
+        )
+
+        # Planta
+
+        if quadrado["plantado"]:
+
+            pygame.draw.circle(
+                tela,
+                (30, 120, 30),
+                (x + 25, y + 25),
+                8
+            )
+
+
+# ======================================
+# PLANTAR
+# ======================================
+
+def plantar_semente(jogador, terreno):
+
+    jogador_rect = pygame.Rect(
+        jogador["x"],
+        jogador["y"],
+        TAMANHO_JOGADOR,
+        TAMANHO_JOGADOR
+    )
+
+    for quadrado in terreno:
+
+        x = TERRENO_X + (
+            quadrado["coluna"] * TAMANHO_TERRENO
+        )
+
+        y = TERRENO_Y + (
+            quadrado["linha"] * TAMANHO_TERRENO
+        )
+
+        terreno_rect = pygame.Rect(
+            x,
+            y,
+            TAMANHO_TERRENO,
+            TAMANHO_TERRENO
+        )
+
+        # Distância horizontal
+
+        distancia_x = (
+            jogador_rect.centerx -
+            terreno_rect.centerx
+        )
+
+        # Distância vertical
+
+        distancia_y = (
+            jogador_rect.centery -
+            terreno_rect.centery
+        )
+
+        # Distância total
+
+        distancia_total = (
+            distancia_x ** 2 +
+            distancia_y ** 2
+        ) ** 0.5
+
+        if distancia_total <= DISTANCIA_INTERACAO:
+
+            quadrado["plantado"] = True
+
+            break
+
+
+# ======================================
+# PROGRAMA PRINCIPAL
+# ======================================
+
+def main():
+
+    pygame.init()
+
+    tela = pygame.display.set_mode(
+        (LARGURA_TELA, ALTURA_TELA)
+    )
+
+    pygame.display.set_caption(
+        "Minha Fazenda"
+    )
+
+    relogio = pygame.time.Clock()
+
+    jogador = criar_jogador()
+
+    terreno = criar_terreno()
+
+    rodando = True
+
+    while rodando:
+
+        # -----------------------
+        # EVENTOS
+        # -----------------------
+
+        for evento in pygame.event.get():
+
+            if evento.type == pygame.QUIT:
+
+                rodando = False
+
+            # Teclado
+
+            if evento.type == pygame.KEYDOWN:
+
+                if evento.key == pygame.K_SPACE:
+
+                    plantar_semente(
+                        jogador,
+                        terreno
+                    )
+
+
+        # -----------------------
+        # TECLAS
+        # -----------------------
+
+        teclas = pygame.key.get_pressed()
+
+
+        # -----------------------
+        # MOVIMENTO
+        # -----------------------
+
+        mover_jogador(
+            jogador,
+            teclas
+        )
+
+
+        # -----------------------
+        # DESENHAR
+        # -----------------------
+
+        desenhar_fazenda(
+            tela
+        )
+
+        desenhar_terreno(
+            tela,
+            terreno
+        )
+
+        desenhar_jogador(
+            tela,
+            jogador
+        )
+
+        pygame.display.flip()
+
+
+        # -----------------------
+        # FPS
+        # -----------------------
+
+        relogio.tick(FPS)
+
+
+    pygame.quit()
+
+
+# ======================================
+# INICIAR JOGO
+# ======================================
+
+if __name__ == "__main__":
+
+    main()
+
+A evolução fica bem clara:
+PARTE 1
+────────────────────────
+Janela
+   +
+Fundo
+   +
+Jogador
+   +
+Movimento
+
+
+        ↓
+
+
+PARTE 2
+────────────────────────
+Tudo da Parte 1
+   +
+Terreno
+   +
+24 quadrados
+
+
+        ↓
+
+
+PARTE 3
+────────────────────────
+Tudo da Parte 2
+   +
+Distância de interação
+   +
+Tecla ESPAÇO
+   +
+Plantação
+
+Parte 4
+
+Nesta etapa, vamos melhorar a plantação. Em vez de a planta aparecer imediatamente como uma bolinha verde, ela terá estágios de crescimento:
+
+vazio → ainda não plantou nada
+semente → acabou de plantar
+crescendo → a planta está crescendo
+pronta → pode ser colhida
+
+
+
+# ===================
+# Configurações
+# ===================
+
+LARGURA_TELA = 800
+ALTURA_TELA = 600
+
+FPS = 60
+
+# CORES
+
+VERDE_GRAMA = (90, 180, 80)
+MARROM_TERRA = (150, 100, 50)
+BRANCO = (255, 255, 255)
+
+VERDE_SEMENTE = (80, 150, 80)
+VERDE_PLANTA = (30, 140, 30)
+VERDE_PRONTA = (20, 100, 20)
+
+
+# ============================
+# JOGADOR
+# ============================
+
+TAMANHO_JOGADOR = 30
+VELOCIDADE = 4
+
+
+# ============================
+# TERRENO
+# ============================
+
+TAMANHO_TERRENO = 50
+
+TERRENO_X = 250
+TERRENO_Y = 150
+
+QUANTIDADE_COLUNAS = 6
+QUANTIDADE_LINHAS = 4
+
+DISTANCIA_INTERACAO = 40
+
+
+# ======================================
+# CRIAR JOGADOR
+# ======================================
+
+def criar_jogador():
+
+    return {
+        "x": 400,
+        "y": 300
+    }
+
+
+# ======================================
+# MOVER JOGADOR
+# ======================================
+
+def mover_jogador(jogador, teclas):
+
+    # Esquerda
+
+    if teclas[pygame.K_LEFT]:
+
+        jogador["x"] -= VELOCIDADE
+
+
+    # Direita
+
+    if teclas[pygame.K_RIGHT]:
+
+        jogador["x"] += VELOCIDADE
+
+
+    # Cima
+
+    if teclas[pygame.K_UP]:
+
+        jogador["y"] -= VELOCIDADE
+
+
+    # Baixo
+
+    if teclas[pygame.K_DOWN]:
+
+        jogador["y"] += VELOCIDADE
+
+
+# ======================================
+# CRIAR TERRENO
+# ======================================
+
+def criar_terreno():
+
+    terreno = []
+
+    for linha in range(QUANTIDADE_LINHAS):
+
+        for coluna in range(QUANTIDADE_COLUNAS):
+
+            quadrado = {
+
+                "linha": linha,
+
+                "coluna": coluna,
+
+                "estado": "vazio"
+
+            }
+
+            terreno.append(quadrado)
+
+    return terreno
+
+
+# ======================================
+# DESENHAR JOGADOR
+# ======================================
+
+def desenhar_jogador(tela, jogador):
+
+    jogador_rect = pygame.Rect(
+
+        jogador["x"],
+
+        jogador["y"],
+
+        TAMANHO_JOGADOR,
+
+        TAMANHO_JOGADOR
+
+    )
+
+    pygame.draw.rect(
+
+        tela,
+
+        BRANCO,
+
+        jogador_rect
+
+    )
+
+
+# ======================================
+# DESENHAR FAZENDA
+# ======================================
+
+def desenhar_fazenda(tela):
+
+    tela.fill(VERDE_GRAMA)
+
+
+# ======================================
+# DESENHAR TERRENO
+# ======================================
+
+def desenhar_terreno(tela, terreno):
+
+    for quadrado in terreno:
+
+        x = TERRENO_X + (
+
+            quadrado["coluna"] * TAMANHO_TERRENO
+
+        )
+
+        y = TERRENO_Y + (
+
+            quadrado["linha"] * TAMANHO_TERRENO
+
+        )
+
+        rect = pygame.Rect(
+
+            x,
+
+            y,
+
+            TAMANHO_TERRENO,
+
+            TAMANHO_TERRENO
+
+        )
+
+
+        # ==========================
+        # TERRA
+        # ==========================
+
+        pygame.draw.rect(
+
+            tela,
+
+            MARROM_TERRA,
+
+            rect
+
+        )
+
+
+        # ==========================
+        # BORDA
+        # ==========================
+
+        pygame.draw.rect(
+
+            tela,
+
+            (100, 70, 40),
+
+            rect,
+
+            2
+
+        )
+
+
+        # ==========================
+        # ESTADO DA PLANTA
+        # ==========================
+
+        estado = quadrado["estado"]
+
+
+        # --------------------------
+        # SEMENTE
+        # --------------------------
+
+        if estado == "semente":
+
+            pygame.draw.circle(
+
+                tela,
+
+                VERDE_SEMENTE,
+
+                (x + 25, y + 25),
+
+                5
+
+            )
+
+
+        # --------------------------
+        # CRESCENDO
+        # --------------------------
+
+        elif estado == "crescendo":
+
+            pygame.draw.circle(
+
+                tela,
+
+                VERDE_PLANTA,
+
+                (x + 25, y + 25),
+
+                10
+
+            )
+
+            pygame.draw.line(
+
+                tela,
+
+                VERDE_PLANTA,
+
+                (x + 25, y + 25),
+
+                (x + 25, y + 10),
+
+                4
+
+            )
+
+
+        # --------------------------
+        # PRONTA
+        # --------------------------
+
+        elif estado == "pronta":
+
+            pygame.draw.circle(
+
+                tela,
+
+                VERDE_PRONTA,
+
+                (x + 25, y + 25),
+
+                14
+
+            )
+
+            pygame.draw.line(
+
+                tela,
+
+                VERDE_PRONTA,
+
+                (x + 25, y + 30),
+
+                (x + 25, y + 10),
+
+                5
+
+            )
+
+
+# ======================================
+# DISTÂNCIA ENTRE JOGADOR E TERRENO
+# ======================================
+
+def esta_perto(jogador, quadrado):
+
+    jogador_rect = pygame.Rect(
+
+        jogador["x"],
+
+        jogador["y"],
+
+        TAMANHO_JOGADOR,
+
+        TAMANHO_JOGADOR
+
+    )
+
+
+    x = TERRENO_X + (
+
+        quadrado["coluna"] * TAMANHO_TERRENO
+
+    )
+
+    y = TERRENO_Y + (
+
+        quadrado["linha"] * TAMANHO_TERRENO
+
+    )
+
+
+    terreno_rect = pygame.Rect(
+
+        x,
+
+        y,
+
+        TAMANHO_TERRENO,
+
+        TAMANHO_TERRENO
+
+    )
+
+
+    distancia_x = (
+
+        jogador_rect.centerx -
+
+        terreno_rect.centerx
+
+    )
+
+
+    distancia_y = (
+
+        jogador_rect.centery -
+
+        terreno_rect.centery
+
+    )
+
+
+    distancia_total = (
+
+        distancia_x ** 2 +
+
+        distancia_y ** 2
+
+    ) ** 0.5
+
+
+    return distancia_total <= DISTANCIA_INTERACAO
+
+
+# ======================================
+# PLANTAR
+# ======================================
+
+def plantar_semente(jogador, terreno):
+
+    for quadrado in terreno:
+
+        if esta_perto(jogador, quadrado):
+
+            if quadrado["estado"] == "vazio":
+
+                quadrado["estado"] = "semente"
+
+                print("Semente plantada!")
+
+                break
+
+
+# ======================================
+# CRESCER PLANTA
+# ======================================
+
+def crescer_planta(jogador, terreno):
+
+    for quadrado in terreno:
+
+        if esta_perto(jogador, quadrado):
+
+            if quadrado["estado"] == "semente":
+
+                quadrado["estado"] = "crescendo"
+
+                print("A planta começou a crescer!")
+
+                break
+
+
+            elif quadrado["estado"] == "crescendo":
+
+                quadrado["estado"] = "pronta"
+
+                print("A planta está pronta para colher!")
+
+                break
+
+
+# ======================================
+# COLHER
+# ======================================
+
+def colher_planta(jogador, terreno):
+
+    for quadrado in terreno:
+
+        if esta_perto(jogador, quadrado):
+
+            if quadrado["estado"] == "pronta":
+
+                quadrado["estado"] = "vazio"
+
+                print("Planta colhida!")
+
+                break
+
+
+# ======================================
+# PROGRAMA PRINCIPAL
+# ======================================
+
+def main():
+
+    pygame.init()
+
+
+    tela = pygame.display.set_mode(
+
+        (LARGURA_TELA, ALTURA_TELA)
+
+    )
+
+
+    pygame.display.set_caption(
+
+        "Minha Fazenda - Parte 4"
+
+    )
+
+
+    relogio = pygame.time.Clock()
+
+
+    jogador = criar_jogador()
+
+    terreno = criar_terreno()
+
+
+    rodando = True
+
+
+    while rodando:
+
+        # ==========================
+        # EVENTOS
+        # ==========================
+
+        for evento in pygame.event.get():
+
+            if evento.type == pygame.QUIT:
+
+                rodando = False
+
+
+            # ==========================
+            # TECLADO
+            # ==========================
+
+            if evento.type == pygame.KEYDOWN:
+
+                # ESPAÇO = PLANTAR
+
+                if evento.key == pygame.K_SPACE:
+
+                    plantar_semente(
+
+                        jogador,
+
+                        terreno
+
+                    )
+
+
+                # E = CRESCER
+
+                if evento.key == pygame.K_e:
+
+                    crescer_planta(
+
+                        jogador,
+
+                        terreno
+
+                    )
+
+
+                # C = COLHER
+
+                if evento.key == pygame.K_c:
+
+                    colher_planta(
+
+                        jogador,
+
+                        terreno
+
+                    )
+
+
+        # ==========================
+        # TECLAS
+        # ==========================
+
+        teclas = pygame.key.get_pressed()
+
+
+        # ==========================
+        # MOVIMENTO
+        # ==========================
+
+        mover_jogador(
+
+            jogador,
+
+            teclas
+
+        )
+
+
+        # ==========================
+        # DESENHAR
+        # ==========================
+
+        desenhar_fazenda(
+
+            tela
+
+        )
+
+
+        desenhar_terreno(
+
+            tela,
+
+            terreno
+
+        )
+
+
+        desenhar_jogador(
+
+            tela,
+
+            jogador
+
+        )
+
+
+        pygame.display.flip()
+
+
+        # ==========================
+        # FPS
+        # ==========================
+
+        relogio.tick(FPS)
+
+
+    pygame.quit()
+
+
+# ======================================
+# INICIAR JOGO
+# ======================================
+
+if __name__ == "__main__":
+
+    main()
+```
