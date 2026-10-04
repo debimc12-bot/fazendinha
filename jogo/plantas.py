@@ -3,7 +3,6 @@ import pygame
 from configuracao.configuracao import Configuracao
 config = Configuracao()
 
-TEMPO_CRESCIMENTO = 10  
 
 def criar_planta():
     return {
@@ -34,10 +33,10 @@ def atualizar_planta(planta):
     tempo_atual = pygame.time.get_ticks()
     tempo_passado = (tempo_atual - planta["tempo_plantio"]) / 1000
 
-    if tempo_passado >= TEMPO_CRESCIMENTO:
+    if tempo_passado >= config.tempo_crescimento:
         planta["estado"] = "pronta"
     
-    elif tempo_passado >= TEMPO_CRESCIMENTO / 2:
+    elif tempo_passado >= config.tempo_crescimento / 2:
         planta["estado"] = "crescendo"
 
 

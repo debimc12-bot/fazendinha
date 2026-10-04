@@ -23,4 +23,4 @@ def criar_terrenos():
 def desenhar_terrenos(tela, terrenos):
     for terreno in terrenos:
         pygame.draw.rect(tela, config.marrom_terra, terreno["rect"])
-        pygame.draw.rect(tela, (80, 50, 25), terreno["rect"], 2)
+        pygame.draw.rect(tela, config.cor_borda_terra, terreno["rect"], 2)
