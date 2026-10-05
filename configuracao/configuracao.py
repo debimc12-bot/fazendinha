@@ -19,9 +19,13 @@ class Configuracao:
 
     tamanho_corvo: int = 30
     velocidade_corvo: int = 2
+    velocidade_ataque_corvo: int = 4
     cor_corvo: tuple = (25, 25, 25)
     cor_bico_corvo: tuple = (255, 200, 0)
     tempo_comendo: int = 1000
+    tempo_ataque_corvo: int = 15
+    tempo_entre_ataques_corvo: float = 2.0
+    
 
     mala_largura: int = 65
     mala_altura: int = 50
@@ -44,6 +48,7 @@ class Configuracao:
 
     tamanho_jogador: int = 30
     velocidade_jogador: int = 4
+    vidas_iniciais: int = 5
 
     tamanho_terreno: int = 50
     terreno_x: int = 100
