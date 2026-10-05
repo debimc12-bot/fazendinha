@@ -7,7 +7,9 @@ from jogo.plantas import atualizar_planta
 from jogo.corvo import criar_corvo, mover_corvo
 from jogo.mala import criar_mala
 from jogo.controle import processar_eventos
-from jogo.desenhar import desenhar_jogo
+from jogo.desenhar import desenhar_jogo, desenhar_pausa
+from jogo.economia import criar_economia
+from jogo.energia import criar_energia
 
 def processar_ataque_corvo(resultado_corvo, vidas):
     if resultado_corvo == "atacou_jogador":
@@ -46,13 +48,16 @@ def iniciar_jogo():
 
     vidas = config.vidas_iniciais
 
+    economia = criar_economia()
+    energia = criar_energia()
+
     jogador["tem_isca"] = False
 
     rodando = True
 
     while rodando:
 
-        rodando, colhidas = processar_eventos(jogador, terrenos, mala)
+        rodando, colhidas, estado = processar_eventos(jogador, terrenos, mala, estado)
 
         plantas_colhidas += colhidas
 
@@ -74,12 +79,17 @@ def iniciar_jogo():
 
             vidas, estado = processar_ataque_corvo(resultado_corvo, vidas)
 
-        for terreno in terrenos:
-            atualizar_planta(terreno["planta"])
+            for terreno in terrenos:
+             atualizar_planta(terreno["planta"])
+            
+            desenhar_jogo(tela, terrenos, jogador, corvo, mala, fonte, plantas_colhidas, vidas)
 
-        desenhar_jogo(tela, terrenos, jogador, corvo, mala, fonte, plantas_colhidas, vidas)
+        elif estado == Configuracao.PAUSADO:
+             desenhar_pausa(tela, fonte, plantas_colhidas, plantas_comidas_corvo, vidas, economia, energia)
+        
 
+            
         pygame.display.flip()
         relogio.tick(config.fps)
-
+            
     pygame.quit()
